@@ -6,8 +6,8 @@ gcloud config set project $GCP_PROJECT_ID
 gcloud config set compute/region us-east1
 gcloud config set compute/zone us-east1-b
 export GKE_CLUSTER_NAME=dmilan-gke-01
-export GKE_NAMESPACE=mynamespace
-export GSA_ID=workload-identity-test
+export GKE_NAMESPACE=identest
+export GSA_ID=workload-identity-test-gsa
 export KSA_ID=workload-identity-test-ksa
 
 
@@ -15,7 +15,7 @@ export KSA_ID=workload-identity-test-ksa
 
 gcloud iam service-accounts create ${GSA_ID}
 gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
-  --member serviceAccount:workload-identity-test@${GCP_PROJECT_ID}.iam.gserviceaccount.com \
+  --member serviceAccount:${GSA_ID}@${GCP_PROJECT_ID}.iam.gserviceaccount.com \
   --role roles/storage.objectViewer
 
 # Create GKE Cluster
@@ -47,6 +47,9 @@ kubectl run --rm -it \
   --namespace ${GKE_NAMESPACE} \
   test-pod
 
+# kubectl run -it --rm --restart='Never' --image=gcr.io/data-protection-01/alpine-plus:latest --serviceaccount ${KSA_ID} --namespace ${GKE_NAMESPACE} alpine-plus
+
+gcloud auth list
 
 # Clean Up
 
