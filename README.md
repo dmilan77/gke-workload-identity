@@ -18,6 +18,10 @@ gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
   --member serviceAccount:${GSA_ID}@${GCP_PROJECT_ID}.iam.gserviceaccount.com \
   --role roles/storage.objectViewer
 
+
+
+
+
 # Create GKE Cluster
 
 
@@ -35,10 +39,11 @@ gcloud iam service-accounts add-iam-policy-binding \
   ${GSA_ID}@${GCP_PROJECT_ID}.iam.gserviceaccount.com
 
 
+
 kubectl annotate serviceaccount \
   --namespace ${GKE_NAMESPACE} \
   ${KSA_ID} \
-  iam.gke.io/gcp-service-account=workload-identity-test@${GCP_PROJECT_ID}.iam.gserviceaccount.com
+  iam.gke.io/gcp-service-account=${GSA_ID}@${GCP_PROJECT_ID}.iam.gserviceaccount.com
 
 kubectl run --rm -it \
   --generator=run-pod/v1 \
